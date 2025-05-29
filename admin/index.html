@@ -22,7 +22,7 @@
   </main>
 
   <script>
-    const questions = [
+    const question = [
       { id: 1, question: "What is JavaScript hoisting?", author: "Alice", approved: false, answered: false },
       { id: 2, question: "How do closures work in JavaScript?", author: "Bob", approved: false, answered: false },
       { id: 3, question: "What is the difference between == and ===?", author: "Charlie", approved: false, answered: false },
@@ -73,14 +73,14 @@
     function deleteQuestion(id) {
       const index = questions.findIndex(q => q.id === id);
       if (index !== -1) {
-        questions.splice(index, 1);
+        question.splice(index, 1);
         alert("Question deleted.");
         renderQuestions();
       }
     }
 
     function markAsAnswered(id) {
-      const question = questions.find(q => q.id === id);
+      const question = question.find(q => q.id === id);
       if (question) {
         question.answered = true;
         alert("Marked as answered.");

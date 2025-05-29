@@ -6,7 +6,7 @@ const questions = [
     approved: false,
     answered: false
   },{
-    id:2
+    id:2,
    question: "What is JavaScript hoisting?",
     author: "Alice",
     approved: false,
