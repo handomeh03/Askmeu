@@ -5,14 +5,29 @@ const questions = [
     author: "User123",
     approved: false,
     answered: false
+  },{
+    id:2
+   question: "What is JavaScript hoisting?",
+    author: "Alice",
+    approved: false,
+    answered: false,
+    helpfulYes: 0,
+    helpfulNo: 0,
   },
   {
     id: 2,
+    question: "How does JavaScript handle asynchronous code?",
+    author: "User123",
+    approved: false,
+    answered: false,
+  },
+  {
+    id: 3,
     question: "What is the difference between let and var?",
     author: "User456",
     approved: false,
-    answered: false
-  }
+    answered: false,
+  },
 ];
 
 function renderQuestions() {
@@ -27,8 +42,12 @@ function renderQuestions() {
       <p><strong>Asked by:</strong> ${q.author}</p>
       <p><strong>Status:</strong> ${q.answered ? "Answered" : "Pending"}</p>
       <div class="buttons">
-        <button class="approve" onclick="approveQuestion(${q.id})">Approve</button>
-        <button class="answered" onclick="markAsAnswered(${q.id})">Mark as Answered</button>
+        <button class="approve" onclick="approveQuestion(${
+          q.id
+        })">Approve</button>
+        <button class="answered" onclick="markAsAnswered(${
+          q.id
+        })">Mark as Answered</button>
         <button class="delete" onclick="deleteQuestion(${q.id})">Delete</button>
       </div>
     `;
@@ -37,7 +56,8 @@ function renderQuestions() {
 }
 
 function approveQuestion(id) {
-  const question = questions.find(q => q.id === id);
+
+  const question = questions.find((q) => q.id === id);
   if (question) {
     question.approved = true;
     alert("Question approved.");
@@ -46,7 +66,8 @@ function approveQuestion(id) {
 }
 
 function deleteQuestion(id) {
-  const index = questions.findIndex(q => q.id === id);
+  const index = questions.findIndex((q) => q.id === id);
+
   if (index !== -1) {
     questions.splice(index, 1);
     alert("Question deleted.");
@@ -55,7 +76,7 @@ function deleteQuestion(id) {
 }
 
 function markAsAnswered(id) {
-  const question = questions.find(q => q.id === id);
+  const question = questions.find((q) => q.id === id);
   if (question) {
     question.answered = true;
     alert("Marked as answered.");
@@ -71,7 +92,8 @@ if (q.answered) {
 
 
 function downloadJSON() {
-  const filename = 'questions.json';
+  const filename = "questions.json";
+
   const jsonStr = JSON.stringify(questions, null, 2); // pretty print
   const blob = new Blob([jsonStr], { type: "application/json" });
   const url = URL.createObjectURL(blob);
