@@ -32,7 +32,7 @@
       </button>
     </form>
 
-    
+    <!-- Answer box -->
     <div id="answerContainer" class="mt-6 hidden">
       <h2 class="text-md font-semibold text-gray-700">Answer:</h2>
       <p id="answerText" class="mt-2 text-gray-800 bg-gray-100 p-3 rounded-xl"></p>
@@ -44,14 +44,36 @@
     const answerBox = document.getElementById("answerContainer");
     const answerText = document.getElementById("answerText");
 
+    // Simple FAQ knowledge base
+    const faqList = [
+      { q: "where can i pay tuition", a: "You can pay tuition at the Finance Office in Building A." },
+      { q: "how do i get my student id", a: "Visit the Student Affairs office with your registration receipt." },
+      { q: "which café is open after 7 p.m.", a: "The Library Café is open until 10 p.m." },
+      { q: "how to extend my visa", a: "Visit the International Office with your passport and enrollment letter." }
+    ];
+
+    function findAnswer(userQuestion) {
+      const normalized = userQuestion.trim().toLowerCase();
+      for (const item of faqList) {
+        if (normalized.includes(item.q)) {
+          return item.a;
+        }
+      }
+      return null;
+    }
+
     form.addEventListener("submit", function (e) {
       e.preventDefault();
       const question = document.getElementById("question").value.trim();
-      if (question) {
-        
-        answerText.textContent = `This is a sample answer for: "${question}"`;
-        answerBox.classList.remove("hidden");
+      const answer = findAnswer(question);
+
+      if (answer) {
+        answerText.textContent = answer;
+      } else {
+        answerText.textContent = "Sorry, I don't know the answer yet.";
       }
+
+      answerBox.classList.remove("hidden");
     });
   </script>
 </body>
