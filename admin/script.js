@@ -1,7 +1,13 @@
 const questions = [
   {
     id: 1,
-    question: "What is JavaScript hoisting?",
+    question: "How does JavaScript handle asynchronous code?",
+    author: "User123",
+    approved: false,
+    answered: false
+  },{
+    id:2
+   question: "What is JavaScript hoisting?",
     author: "Alice",
     approved: false,
     answered: false,
@@ -50,6 +56,7 @@ function renderQuestions() {
 }
 
 function approveQuestion(id) {
+
   const question = questions.find((q) => q.id === id);
   if (question) {
     question.approved = true;
@@ -60,6 +67,7 @@ function approveQuestion(id) {
 
 function deleteQuestion(id) {
   const index = questions.findIndex((q) => q.id === id);
+
   if (index !== -1) {
     questions.splice(index, 1);
     alert("Question deleted.");
@@ -82,8 +90,10 @@ if (q.answered) {
   card.classList.add("approved");
 }
 
+
 function downloadJSON() {
   const filename = "questions.json";
+
   const jsonStr = JSON.stringify(questions, null, 2); // pretty print
   const blob = new Blob([jsonStr], { type: "application/json" });
   const url = URL.createObjectURL(blob);

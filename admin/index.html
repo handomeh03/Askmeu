@@ -1,5 +1,97 @@
 <!DOCTYPE html>
 <html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Admin Panel - Ask Me U</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header>
+    <h1>Admin Panel - Ask Me U</h1>
+  </header>
+
+  <main>
+    <section id="questions-container">
+      <!-- Questions will be rendered here -->
+       <div style="text-align: right; margin-bottom: 1rem;">
+  <button onclick="downloadJSON()" class="save-json">💾 Save Q&A to JSON</button>
+</div>
+
+    </section>
+  </main>
+
+  <script>
+    const questions = [
+      { id: 1, question: "What is JavaScript hoisting?", author: "Alice", approved: false, answered: false },
+      { id: 2, question: "How do closures work in JavaScript?", author: "Bob", approved: false, answered: false },
+      { id: 3, question: "What is the difference between == and ===?", author: "Charlie", approved: false, answered: false },
+      { id: 4, question: "Explain event delegation.", author: "Diana", approved: false, answered: false },
+      { id: 5, question: "What is a promise and how does it work?", author: "Eve", approved: false, answered: false },
+      { id: 6, question: "What are arrow functions?", author: "Frank", approved: false, answered: false },
+      { id: 7, question: "Explain the concept of 'this' in JavaScript.", author: "Grace", approved: false, answered: false },
+      { id: 8, question: "How does async/await improve code readability?", author: "Henry", approved: false, answered: false },
+      { id: 9, question: "What is the event loop in JavaScript?", author: "Ivy", approved: false, answered: false },
+      { id: 10, question: "How do you handle errors in async code?", author: "Jack", approved: false, answered: false },
+      { id: 11, question: "What are JavaScript data types?", author: "Karen", approved: false, answered: false },
+      { id: 12, question: "Explain how localStorage works.", author: "Leo", approved: false, answered: false },
+      { id: 13, question: "How do you debounce a function?", author: "Mia", approved: false, answered: false },
+      { id: 14, question: "What is a JavaScript prototype?", author: "Nina", approved: false, answered: false },
+      { id: 15, question: "What are template literals?", author: "Oscar", approved: false, answered: false }
+    ];
+
+    function renderQuestions() {
+      const container = document.getElementById("questions-container");
+      container.innerHTML = "";
+
+      questions.forEach((q) => {
+        const card = document.createElement("div");
+        card.className = "question-card";
+        card.innerHTML = `
+          <h3>${q.question}</h3>
+          <p><strong>Asked by:</strong> ${q.author}</p>
+          <p><strong>Status:</strong> ${q.answered ? "Answered" : "Pending"}</p>
+          <div class="buttons">
+            <button class="approve" onclick="approveQuestion(${q.id})">Approve</button>
+            <button class="answered" onclick="markAsAnswered(${q.id})">Mark as Answered</button>
+            <button class="delete" onclick="deleteQuestion(${q.id})">Delete</button>
+          </div>
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    function approveQuestion(id) {
+      const question = questions.find(q => q.id === id);
+      if (question) {
+        question.approved = true;
+        alert("Question approved.");
+        renderQuestions();
+      }
+    }
+
+    function deleteQuestion(id) {
+      const index = questions.findIndex(q => q.id === id);
+      if (index !== -1) {
+        questions.splice(index, 1);
+        alert("Question deleted.");
+        renderQuestions();
+      }
+    }
+
+    function markAsAnswered(id) {
+      const question = questions.find(q => q.id === id);
+      if (question) {
+        question.answered = true;
+        alert("Marked as answered.");
+        renderQuestions();
+      }
+    }
+
+    window.onload = renderQuestions;
+  </script>
+</body>
+=======
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
