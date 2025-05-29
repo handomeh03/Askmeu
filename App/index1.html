@@ -1,19 +1,19 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Ask-MEU - Q&A Input</title>
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-purple-50 flex items-center justify-center min-h-screen px-4">
   <div class="bg-white rounded-2xl shadow-xl p-6 w-full max-w-md">
     <div class="text-center mb-4">
-      <img src="https://www.pngkit.com/png/full/614-6143729_jordan-logo-png.png" alt="MEU Logo" class="h-16 mx-auto mb-2">
+      <img src="https://www.pngkit.com/png/full/614-6143729_jordan-logo-png.png" alt="MEU Logo" class="h-16 mx-auto mb-2" />
       <h1 class="text-2xl font-bold text-red-800">Ask-MEU</h1>
       <p class="text-gray-500 text-sm">Your AI Buddy for Campus Life</p>
     </div>
-    
+
     <form id="qaForm" class="space-y-4">
       <label for="question" class="block text-sm font-medium text-gray-700">Ask a question:</label>
       <input
@@ -32,11 +32,27 @@
       </button>
     </form>
 
+    
     <div id="answerContainer" class="mt-6 hidden">
       <h2 class="text-md font-semibold text-gray-700">Answer:</h2>
       <p id="answerText" class="mt-2 text-gray-800 bg-gray-100 p-3 rounded-xl"></p>
     </div>
   </div>
 
+  <script>
+    const form = document.getElementById("qaForm");
+    const answerBox = document.getElementById("answerContainer");
+    const answerText = document.getElementById("answerText");
+
+    form.addEventListener("submit", function (e) {
+      e.preventDefault();
+      const question = document.getElementById("question").value.trim();
+      if (question) {
+        
+        answerText.textContent = `This is a sample answer for: "${question}"`;
+        answerBox.classList.remove("hidden");
+      }
+    });
+  </script>
 </body>
 </html>
