@@ -1,94 +1,277 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Admin Panel - Ask Me U</title>
-  <link rel="stylesheet" href="style.css" />
-</head>
-<body>
-  <header>
-    <h1>Admin Panel - Ask Me U</h1>
-  </header>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin Panel - Ask MEU</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        background: #f4f4f4;
+      }
 
-  <main>
-    <section id="questions-container">
-      <!-- Questions will be rendered here -->
-       <div style="text-align: right; margin-bottom: 1rem;">
-  <button onclick="downloadJSON()" class="save-json">💾 Save Q&A to JSON</button>
-</div>
+      header {
+        background-color: #333;
+        color: #fff;
+        padding: 1rem;
+        text-align: center;
+      }
 
-    </section>
-  </main>
+      main {
+        padding: 2rem;
+        max-width: 800px;
+        margin: auto;
+      }
 
-  <script>
-    const questions = [
-      { id: 1, question: "What is JavaScript hoisting?", author: "Alice", approved: false, answered: false },
-      { id: 2, question: "How do closures work in JavaScript?", author: "Bob", approved: false, answered: false },
-      { id: 3, question: "What is the difference between == and ===?", author: "Charlie", approved: false, answered: false },
-      { id: 4, question: "Explain event delegation.", author: "Diana", approved: false, answered: false },
-      { id: 5, question: "What is a promise and how does it work?", author: "Eve", approved: false, answered: false },
-      { id: 6, question: "What are arrow functions?", author: "Frank", approved: false, answered: false },
-      { id: 7, question: "Explain the concept of 'this' in JavaScript.", author: "Grace", approved: false, answered: false },
-      { id: 8, question: "How does async/await improve code readability?", author: "Henry", approved: false, answered: false },
-      { id: 9, question: "What is the event loop in JavaScript?", author: "Ivy", approved: false, answered: false },
-      { id: 10, question: "How do you handle errors in async code?", author: "Jack", approved: false, answered: false },
-      { id: 11, question: "What are JavaScript data types?", author: "Karen", approved: false, answered: false },
-      { id: 12, question: "Explain how localStorage works.", author: "Leo", approved: false, answered: false },
-      { id: 13, question: "How do you debounce a function?", author: "Mia", approved: false, answered: false },
-      { id: 14, question: "What is a JavaScript prototype?", author: "Nina", approved: false, answered: false },
-      { id: 15, question: "What are template literals?", author: "Oscar", approved: false, answered: false }
-    ];
+      .question-card {
+        background: #fff;
+        border: 1px solid #ddd;
+        padding: 1rem;
+        margin-bottom: 1rem;
+        border-radius: 5px;
+      }
 
-    function renderQuestions() {
-      const container = document.getElementById("questions-container");
-      container.innerHTML = "";
+      .question-card.answered {
+        border-left: 6px solid #007bff;
+        background-color: #f0f8ff; /* Softer blue */
+      }
 
-      questions.forEach((q) => {
-        const card = document.createElement("div");
-        card.className = "question-card";
-        card.innerHTML = `
+      .question-card.answered h3,
+      .question-card.answered p {
+        color: #333; /* Fix contrast to make text readable */
+      }
+
+      .question-card.approved:not(.answered) {
+        border-left: 6px solid #28a745;
+        background-color: #e6f4ea;
+      }
+
+      .question-card p {
+        margin: 0.5rem 0;
+      }
+
+      .buttons {
+        margin-top: 1rem;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+      }
+
+      button {
+        padding: 0.5rem 1rem;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+      }
+
+      .approve {
+        background-color: #28a745;
+        color: #fff;
+      }
+      .answered {
+        background-color: #007bff;
+        color: #fff;
+      }
+      .delete {
+        background-color: #dc3545;
+        color: #fff;
+      }
+      .edit {
+        background-color: #ffc107;
+        color: #000;
+      }
+
+      .add-form input,
+      .add-form textarea {
+        width: 100%;
+        margin-bottom: 0.5rem;
+        padding: 0.5rem;
+        border-radius: 4px;
+        border: 1px solid #ccc;
+      }
+
+      .add-form button {
+        background-color: #333;
+        color: #fff;
+      }
+
+      @media (max-width: 600px) {
+        button {
+          width: 100%;
+        }
+        .buttons {
+          flex-direction: column;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <h1>Admin Panel - Ask MEU</h1>
+    </header>
+
+    <main>
+      <section class="add-form">
+        <h2>Add New Question</h2>
+        <input type="text" id="new-author" placeholder="Author Name" />
+        <textarea
+          id="new-question"
+          placeholder="Enter question text"
+        ></textarea>
+        <textarea
+          id="new-answer"
+          placeholder="Enter answer (optional)"
+        ></textarea>
+        <button onclick="addNewQuestion()">➕ Add Question</button>
+      </section>
+
+      <div style="text-align: right; margin: 1rem 0">
+        <button onclick="downloadJSON()">💾 Save Q&A to JSON</button>
+      </div>
+
+      <section id="questions-container"></section>
+    </main>
+
+    <script>
+      let questions = [
+        {
+          id: 1,
+          question: "What is JavaScript hoisting?",
+          author: "Alice",
+          answer: "",
+          approved: false,
+          answered: false,
+        },
+        {
+          id: 2,
+          question: "How do closures work in JavaScript?",
+          author: "Bob",
+          answer: "",
+          approved: false,
+          answered: false,
+        },
+      ];
+
+      function renderQuestions() {
+        const container = document.getElementById("questions-container");
+        container.innerHTML = "";
+
+        questions.forEach((q) => {
+          const card = document.createElement("div");
+          card.className = "question-card";
+          if (q.answered) card.classList.add("answered");
+          else if (q.approved) card.classList.add("approved");
+
+          card.innerHTML = `
           <h3>${q.question}</h3>
           <p><strong>Asked by:</strong> ${q.author}</p>
-          <p><strong>Status:</strong> ${q.answered ? "Answered" : "Pending"}</p>
+          <p><strong>Status:</strong> ${
+            q.answered ? "Answered" : q.approved ? "Approved" : "Pending"
+          }</p>
+          ${q.answer ? `<p><strong>Answer:</strong> ${q.answer}</p>` : ""}
           <div class="buttons">
-            <button class="approve" onclick="approveQuestion(${q.id})">Approve</button>
-            <button class="answered" onclick="markAsAnswered(${q.id})">Mark as Answered</button>
-            <button class="delete" onclick="deleteQuestion(${q.id})">Delete</button>
+            <button class="approve" onclick="approveQuestion(${
+              q.id
+            })">Approve</button>
+            <button class="answered" onclick="markAsAnswered(${
+              q.id
+            })">Mark as Answered</button>
+            <button class="edit" onclick="editQuestion(${
+              q.id
+            })">✏️ Edit</button>
+            <button class="delete" onclick="deleteQuestion(${
+              q.id
+            })">Delete</button>
           </div>
         `;
-        container.appendChild(card);
-      });
-    }
+          container.appendChild(card);
+        });
+      }
 
-    function approveQuestion(id) {
-      const question = questions.find(q => q.id === id);
-      if (question) {
-        question.approved = true;
-        alert("Question approved.");
+      function addNewQuestion() {
+        const author = document.getElementById("new-author").value.trim();
+        const question = document.getElementById("new-question").value.trim();
+        const answer = document.getElementById("new-answer").value.trim();
+
+        if (!author || !question)
+          return alert("Author and Question are required.");
+
+        questions.push({
+          id: Date.now(),
+          author,
+          question,
+          answer,
+          approved: false,
+          answered: !!answer,
+        });
+
+        document.getElementById("new-author").value = "";
+        document.getElementById("new-question").value = "";
+        document.getElementById("new-answer").value = "";
+
         renderQuestions();
       }
-    }
 
-    function deleteQuestion(id) {
-      const index = questions.findIndex(q => q.id === id);
-      if (index !== -1) {
-        questions.splice(index, 1);
-        alert("Question deleted.");
+      function approveQuestion(id) {
+        const q = questions.find((q) => q.id === id);
+        if (q) {
+          q.approved = true;
+          alert("✅ Question approved");
+          renderQuestions();
+        }
+      }
+
+      function markAsAnswered(id) {
+        const q = questions.find((q) => q.id === id);
+        if (q) {
+          const answer = prompt("Enter the answer:", q.answer || "");
+          if (answer !== null) {
+            q.answered = true;
+            q.answer = answer.trim();
+            alert("✅ Question marked as answered");
+            renderQuestions();
+          }
+        }
+      }
+
+      function deleteQuestion(id) {
+        if (confirm("Are you sure you want to delete this question?")) {
+          questions = questions.filter((q) => q.id !== id);
+          alert("🗑️ Question deleted");
+          renderQuestions();
+        }
+      }
+
+      function editQuestion(id) {
+        const q = questions.find((q) => q.id === id);
+        if (!q) return;
+
+        const newQuestion = prompt("Edit question:", q.question);
+        const newAnswer = prompt("Edit answer:", q.answer || "");
+        if (newQuestion !== null) q.question = newQuestion.trim();
+        if (newAnswer !== null) {
+          q.answer = newAnswer.trim();
+          q.answered = !!q.answer;
+        }
+
         renderQuestions();
       }
-    }
 
-    function markAsAnswered(id) {
-      const question = questions.find(q => q.id === id);
-      if (question) {
-        question.answered = true;
-        alert("Marked as answered.");
-        renderQuestions();
+      function downloadJSON() {
+        const jsonStr = JSON.stringify(questions, null, 2);
+        const blob = new Blob([jsonStr], { type: "application/json" });
+        const url = URL.createObjectURL(blob);
+
+        const link = document.createElement("a");
+        link.href = url;
+        link.download = "questions.json";
+        link.click();
+        URL.revokeObjectURL(url);
       }
-    }
 
-    window.onload = renderQuestions;
-  </script>
-</body>
+      window.onload = renderQuestions;
+    </script>
+  </body>
 </html>
