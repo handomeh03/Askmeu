@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin Panel - Ask MEU</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        background: #f4f4f4;
+      }
+
+      header {
+        background-color: #333;
+        color: #fff;
+        padding: 1rem;
+        text-align: center;
+      }
+
+      main {
+        padding: 2rem;
+        max-width: 800px;
+        margin: auto;
+      }
+
+      .question-card {
+        background: #fff;
+        border: 1px solid #ddd;
+        padding: 1rem;
+        margin-bottom: 1rem;
+        border-radius: 5px;
+      }
+
+      .question-card.answered {
+        border-left: 6px solid #007bff;
+        background-color: #f0f8ff; /* Softer blue */
+      }
+
+      .question-card.answered h3,
+      .question-card.answered p {
+        color: #333; /* Fix contrast to make text readable */
+      }
+
+      .question-card.approved:not(.answered) {
+        border-left: 6px solid #28a745;
+        background-color: #e6f4ea;
+      }
+
+      .question-card p {
+        margin: 0.5rem 0;
+      }
+
+      .buttons {
+        margin-top: 1rem;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+      }
+
+      button {
+        padding: 0.5rem 1rem;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+      }
+
+      .approve {
+        background-color: #28a745;
+        color: #fff;
+      }
+      .answered {
+        background-color: #007bff;
+        color: #fff;
+      }
+      .delete {
+        background-color: #dc3545;
+        color: #fff;
+      }
+      .edit {
+        background-color: #ffc107;
+        color: #000;
+      }
+
+      .add-form input,
+      .add-form textarea {
+        width: 100%;
+        margin-bottom: 0.5rem;
+        padding: 0.5rem;
+        border-radius: 4px;
+        border: 1px solid #ccc;
+      }
+
+      .add-form button {
+        background-color: #333;
+        color: #fff;
+      }
+
+      @media (max-width: 600px) {
+        button {
+          width: 100%;
+        }
+        .buttons {
+          flex-direction: column;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <h1>Admin Panel - Ask MEU</h1>
+    </header>
+
+    <main>
+      <section class="add-form">
+        <h2>Add New Question</h2>
+        <input type="text" id="new-author" placeholder="Author Name" />
+        <textarea
+          id="new-question"
+          placeholder="Enter question text"
+        ></textarea>
+        <textarea
+          id="new-answer"
+          placeholder="Enter answer (optional)"
+        ></textarea>
+        <button onclick="addNewQuestion()">➕ Add Question</button>
+      </section>
+
+      <div style="text-align: right; margin: 1rem 0">
+        <button onclick="downloadJSON()">💾 Save Q&A to JSON</button>
+      </div>
+
+      <section id="questions-container"></section>
+    </main>
+
+    <script>
+      const questions = [
+        {
+          id: 1,
+          question: "Where is Middle East University (MEU) located?",
+          author: "Abdullah",
+          answer: "",
+          approved: false,
+          answered: false,
+        },
+        {
+          id: 2,
+          question: "What undergraduate programs does MEU offer?",
+          author: "Laila",
+          answer: "",
+          approved: false,
+          answered: false,
+        },
+        {
+          id: 3,
+          question: "How do I apply for admission to MEU?",
+          author: "Omar",
+          answer: "",
+          approved: false,
+          answered: false,
+        },
+        {
+          id: 4,
+          question: "Does MEU offer scholarships or financial aid?",
+          author: "Yara",
+          answer: "",
+          approved: false,
+          answered: false,
+        },
+        {
+          id: 5,
+          question: "What are the tuition fees at MEU?",
+          author: "Tariq",
+          answer: "",
+          approved: false,
+          answered: false,
+        },
+        {
+          id: 6,
+          question:
+            "Is MEU accredited by the Jordanian Ministry of Higher Education?",
+          author: "Hiba",
+          answer: "",
+          approved: false,
+          answered: false,
+        },
+        {
+          id: 7,
+          question: "How can I contact the admissions office at MEU?",
+          author: "Rami",
+          answer: "",
+          approved: false,
+          answered: false,
+        },
+        {
+          id: 8,
+          question: "Does MEU have a transportation service for students?",
+          author: "Nour",
+          answer: "",
+          approved: false,
+          answered: false,
+        },
+        {
+          id: 9,
+          question: "What master's programs are available at MEU?",
+          author: "Faris",
+          answer: "",
+          approved: false,
+          answered: false,
+        },
+        {
+          id: 10,
+          question: "Is there student housing near MEU?",
+          author: "Salma",
+          answer: "",
+          approved: false,
+          answered: false,
+        },
+        {
+          id: 11,
+          question: "What facilities are available on campus at MEU?",
+          author: "Yousef",
+          answer: "",
+          approved: false,
+          answered: false,
+        },
+        {
+          id: 12,
+          question: "What is the university’s vision and mission?",
+          author: "Dana",
+          answer: "",
+          approved: false,
+          answered: false,
+        },
+        {
+          id: 13,
+          question: "How do I register for courses at MEU?",
+          author: "Hamza",
+          answer: "",
+          approved: false,
+          answered: false,
+        },
+        {
+          id: 14,
+          question: "Does MEU support online or hybrid learning?",
+          author: "Sara",
+          answer: "",
+          approved: false,
+          answered: false,
+        },
+        {
+          id: 15,
+          question: "Can I transfer credits from another university to MEU?",
+          author: "Zaid",
+          answer: "",
+          approved: false,
+          answered: false,
+        },
+      ];
+
+      function renderQuestions() {
+        const container = document.getElementById("questions-container");
+        container.innerHTML = "";
+
+        questions.forEach((q) => {
+          const card = document.createElement("div");
+          card.className = "question-card";
+          if (q.answered) card.classList.add("answered");
+          else if (q.approved) card.classList.add("approved");
+
+          card.innerHTML = `
+          <h3>${q.question}</h3>
+          <p><strong>Asked by:</strong> ${q.author}</p>
+          <p><strong>Status:</strong> ${
+            q.answered ? "Answered" : q.approved ? "Approved" : "Pending"
+          }</p>
+          ${q.answer ? `<p><strong>Answer:</strong> ${q.answer}</p>` : ""}
+          <div class="buttons">
+            <button class="approve" onclick="approveQuestion(${
+              q.id
+            })">Approve</button>
+            <button class="answered" onclick="markAsAnswered(${
+              q.id
+            })">Mark as Answered</button>
+            <button class="edit" onclick="editQuestion(${
+              q.id
+            })">✏️ Edit</button>
+            <button class="delete" onclick="deleteQuestion(${
+              q.id
+            })">Delete</button>
+          </div>
+        `;
+          container.appendChild(card);
+        });
+      }
+
+      function addNewQuestion() {
+        const author = document.getElementById("new-author").value.trim();
+        const question = document.getElementById("new-question").value.trim();
+        const answer = document.getElementById("new-answer").value.trim();
+
+        if (!author || !question)
+          return alert("Author and Question are required.");
+
+        questions.push({
+          id: Date.now(),
+          author,
+          question,
+          answer,
+          approved: false,
+          answered: !!answer,
+        });
+
+        document.getElementById("new-author").value = "";
+        document.getElementById("new-question").value = "";
+        document.getElementById("new-answer").value = "";
+
+        renderQuestions();
+      }
+
+      function approveQuestion(id) {
+        const q = questions.find((q) => q.id === id);
+        if (q) {
+          q.approved = true;
+          alert("✅ Question approved");
+          renderQuestions();
+        }
+      }
+
+      function markAsAnswered(id) {
+        const q = questions.find((q) => q.id === id);
+        if (q) {
+          const answer = prompt("Enter the answer:", q.answer || "");
+          if (answer !== null) {
+            q.answered = true;
+            q.answer = answer.trim();
+            alert("✅ Question marked as answered");
+            renderQuestions();
+          }
+        }
+      }
+
+      function deleteQuestion(id) {
+        if (confirm("Are you sure you want to delete this question?")) {
+          questions = questions.filter((q) => q.id !== id);
+          alert("🗑️ Question deleted");
+          renderQuestions();
+        }
+      }
+
+      function editQuestion(id) {
+        const q = questions.find((q) => q.id === id);
+        if (!q) return;
+
+        const newQuestion = prompt("Edit question:", q.question);
+        const newAnswer = prompt("Edit answer:", q.answer || "");
+        if (newQuestion !== null) q.question = newQuestion.trim();
+        if (newAnswer !== null) {
+          q.answer = newAnswer.trim();
+          q.answered = !!q.answer;
+        }
+
+        renderQuestions();
+      }
+
+      function downloadJSON() {
+        const jsonStr = JSON.stringify(questions, null, 2);
+        const blob = new Blob([jsonStr], { type: "application/json" });
+        const url = URL.createObjectURL(blob);
+
+        const link = document.createElement("a");
+        link.href = url;
+        link.download = "questions.json";
+        link.click();
+        URL.revokeObjectURL(url);
+      }
+
+      window.onload = renderQuestions;
+    </script>
+  </body>
+</html>
